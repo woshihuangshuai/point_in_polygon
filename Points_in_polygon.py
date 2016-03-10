@@ -68,9 +68,11 @@ def Get_area_list():
 	admin_level_4[1][2].append(admin_level_5)
 	admin_level_4[0][2].append(admin_level_6)
 
-	for a in admin_level_4:
-		print a		
+
+def point_in_polygon(lat,lon):
+	print lat,lon
+	
 
 if __name__ == '__main__':
 	Get_area_list()
-	pass
+	point_in_polygon(123.1231312312,-42.12324244)
