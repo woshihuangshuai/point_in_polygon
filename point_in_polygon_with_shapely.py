@@ -4,8 +4,7 @@
 import json
 from shapely.geometry import asShape,Point
 
-admin_level_6 = [] #区
-admin_level_8 = [] #街道
+admin_level_2 = [] #国家
 
 class area:
 	def __init__(self):
@@ -20,9 +19,10 @@ class area:
 	
 		
 def Get_area_list():
-	json_f = open('beijing.json')
-	f = json.load(json_f)
-
+	print "Creat list of countrys'boundary..."
+	with open('admin_level_2.geojson') as json_f:
+		f = json.load(json_f)
+	
 	error_count = 0
 
 	for feature in f['features']:
@@ -31,29 +31,35 @@ def Get_area_list():
 		except KeyError, e:
 			error_count += 1
 			continue
-		if feature['properties']['tags'] != None:
-			tag_list =  feature['properties']['tags'].split('\"',)
-			for tag in tag_list:
-				if tag == 'admin_level':
-					admin_area = area(tag_list[tag_list.index("name:en")+2],polygon,[])
-					if tag_list[tag_list.index(tag)+2] == '6':
-						admin_level_6.append(admin_area)
-					elif tag_list[tag_list.index(tag)+2] == '8':
-						admin_level_8.append(admin_area)
+		try:
+			if feature['osm_type'] == "relation":
+				admin_area = area(feature['properties']['name:en'],polygon,[])
+				admin_level_2.append(admin_area)	
+
+		except KeyError, e:
+			print KeyError
+			error_count += 1
+			print "error number:",error_count
+
+
+	print "List of countrys'boundary has been created."
 
 def point_in_polygon_with_shapely(lat,lon):
 	point = Point(lat,lon)
-	for area in admin_level_6:
-		if area.boundary.contains(point) or area.boundary.touches(point):
-			print "This point is in %s"%area.name
+	for area in admin_level_2:
+		if area.boundary.intersects(point):#contains() or crosses() or equals() or touches() or within()
+			print point,"is in %s"%area.name
 			return True
 	print "Point doesn't found"
 	return False
 
 if __name__ == '__main__':
 	Get_area_list()
-	lat = input("Input latitude:")
-	lon = input("Input longitude:")
-	point_in_polygon_with_shapely(lat,lon)
-	#point_in_polygon_with_shapely(116.3579936,39.9587666)
+	point_in_polygon_with_shapely(116.3579936,39.9587666) #china
+	point_in_polygon_with_shapely(-87.3857493,12.8596198) #nicaragua 
+	point_in_polygon_with_shapely(10.4234469,51.0834196) #germany false
+	point_in_polygon_with_shapely(-4.0239568,39.8560679) #spain false
+	point_in_polygon_with_shapely(-2.2900239,16.3700359) #mali false
+	point_in_polygon_with_shapely(2.3514992,48.8566101) #france
+
 
