@@ -17,7 +17,7 @@ class Area:
 
 	
 def Get_area_list():
-	print "Creat list of countrys'boundary..."
+	print "Reading OSM data(admin_level=country) and Creating list of countries..."
 
 	area_list = []
 	bbox_dict = {}
