@@ -47,12 +47,12 @@ def Get_area_list():
 	print "List of countrys'boundary has been created."
 	return bbox_dict
 
-def point_in_polygon_with_shapely(bbox_dict, lat, lon):
-	point = Point(lat, lon)
+def point_in_polygon_with_shapely(bbox_dict, lon, lat):
+	point = Point(lon, lat)
 	candidate_area_list = []
 
 	for bounds, area in bbox_dict.iteritems():
-		if  (lat >= bounds[0]) & (lat <= bounds[2]) & (lon >= bounds[1]) & (lon <= bounds[3]):
+		if  (lon >= bounds[0]) & (lon <= bounds[2]) & (lat >= bounds[1]) & (lat <= bounds[3]):
 			candidate_area_list.append(area)
 
 	for area in candidate_area_list:
@@ -63,9 +63,13 @@ def point_in_polygon_with_shapely(bbox_dict, lat, lon):
 
 if __name__ == '__main__':
 	bbox_dict = Get_area_list()
-	lat = input('Input latitude:')
-	lon = input("Input longitude:")
-	print point_in_polygon_with_shapely(bbox_dict, lat, lon)
+
+	while True:
+		lon = input("Input longitude:")
+		lat = input('Input latitude:')
+		
+		print point_in_polygon_with_shapely(bbox_dict, lon, lat)
+
 	'''
 	point_in_polygon_with_shapely(bbox_dict, 116.3579936, 39.9587666)  # china
 	point_in_polygon_with_shapely(bbox_dict, -87.3857493, 12.8596198)  # nicaragua
